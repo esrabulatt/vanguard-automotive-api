@@ -46,6 +46,11 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ success: false, message: 'Sunucu hatası oluştu.' });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚗 Vanguard Automotive API çalışıyor: http://localhost:${PORT}`);
-});
+// Vercel uygulamayı kendisi çalıştırır; yerelde sunucuyu biz başlatırız
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`🚗 Vanguard Automotive API çalışıyor: http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

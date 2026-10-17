@@ -21,6 +21,8 @@ npm start     # production
 
 API varsayılan olarak **http://localhost:3001** adresinde çalışır. Portu değiştirmek için: `PORT=4000 npm start`
 
+**Vercel:** Repo doğrudan Vercel'e içe aktarılabilir; `server.js` Express uygulamasını dışa aktarır. Vercel'de veritabanı `/tmp` altında tutulur, yani randevular geçicidir (demo amaçlı).
+
 > macOS'ta 5000 portu AirPlay Receiver tarafından kullanıldığı için 3001 seçildi.
 
 ## Proje yapısı
