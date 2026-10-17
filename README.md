@@ -7,7 +7,7 @@ Lüks arazi ve SUV araçlar satan hayali butik galeri **Vanguard Automotive**'in
 - **WhatsApp bildirimi:** her yeni randevuda satış ekibine Meta WhatsApp Cloud API ile mesaj (ayarlanmazsa konsola yazılır)
 
 > **Not:** Bu bir **portfolyo / demo projesidir**; Vanguard Automotive gerçek bir işletme değildir.
-> Ön yüz ayrı bir depodadır (`car-rental-frontend`).
+> Ön yüz aynı üst klasördeki `../web` projesidir.
 
 ## Kurulum ve çalıştırma
 
@@ -26,7 +26,7 @@ API varsayılan olarak **http://localhost:3001** adresinde çalışır. Portu de
 ## Proje yapısı
 
 ```text
-rent-a-car-api/
+api/
 ├── server.js            # Express app, middleware (CORS, JSON), 404 ve error handler
 ├── routes/
 │   ├── cars.js          # /api/cars (listeleme, filtre, featured, detay)
