@@ -1,0 +1,360 @@
+{
+  "info": {
+    "name": "Rent a Car API",
+    "description": "Express REST API — araç listeleme, kiralama (bookings) ve satın alma ön rezervasyonu (orders).\n\nTüm yanıtlar `{ success, data, count? }` veya `{ success: false, message, errors? }` formatındadır.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": []
+        },
+        "description": "API adı ve endpoint listesi."
+      }
+    },
+    {
+      "name": "Cars",
+      "item": [
+        {
+          "name": "Tüm araçlar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/cars",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cars"
+              ]
+            },
+            "description": "Her araçta pricePerDay (günlük kira), price (satış fiyatı) ve year (model yılı) bulunur."
+          }
+        },
+        {
+          "name": "Kategoriye göre filtre",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/cars?category=Off-Road",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cars"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "Off-Road"
+                }
+              ]
+            },
+            "description": "category: Off-Road | Luxury (büyük/küçük harf duyarsız)."
+          }
+        },
+        {
+          "name": "Markaya göre filtre",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/cars?brand=Land Rover",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cars"
+              ],
+              "query": [
+                {
+                  "key": "brand",
+                  "value": "Land Rover"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Arama",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/cars?search=defender",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cars"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "defender"
+                }
+              ]
+            },
+            "description": "Ad, marka veya kategoride geçen metin."
+          }
+        },
+        {
+          "name": "Öne çıkan araçlar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/cars/featured",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cars",
+                "featured"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Araç detayı",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/cars/car-12",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cars",
+                "car-12"
+              ]
+            },
+            "description": "Bulunamazsa 404."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings (kiralama)",
+      "item": [
+        {
+          "name": "Rezervasyonları listele",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "bookings"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Kiralama rezervasyonu oluştur",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "bookings"
+              ]
+            },
+            "description": "201 döner. 400: validasyon, 404: araç yok, 409: araç müsait değil veya tarih çakışması.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"carId\": \"car-1\",\n  \"startDate\": \"2026-12-01\",\n  \"endDate\": \"2026-12-04\",\n  \"customerName\": \"Esra Bulat\",\n  \"email\": \"example@email.com\",\n  \"totalPrice\": 7500\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders (satın alma)",
+      "item": [
+        {
+          "name": "Satın alma rezervasyonlarını listele",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Satın alma ön rezervasyonu oluştur",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "201 döner. Kaparo (deposit) server'da satış fiyatının %2'si olarak hesaplanır. 400: validasyon, 404: araç yok, 409: araç müsait değil veya zaten rezerve.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"carId\": \"car-12\",\n  \"customerName\": \"Esra Bulat\",\n  \"email\": \"example@email.com\",\n  \"phone\": \"0532 123 45 67\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Hatalı istek örneği (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Tüm validasyon hataları errors dizisinde döner.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"carId\": \"car-12\",\n  \"customerName\": \"E\",\n  \"email\": \"gecersiz\",\n  \"phone\": \"123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Appointments (özel sunum)",
+      "item": [
+        {
+          "name": "Randevuları listele",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Özel sunum randevusu oluştur",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments"
+              ]
+            },
+            "description": "type: showroom | home · timeSlot: morning | noon | afternoon · date: bugünden en fazla 60 gün sonra. Aracı rezerve etmez.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"carId\": \"car-1\",\n  \"customerName\": \"Esra Bulat\",\n  \"phone\": \"0532 123 45 67\",\n  \"type\": \"showroom\",\n  \"date\": \"2026-10-20\",\n  \"timeSlot\": \"morning\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
