@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
     data: {
-      name: 'Rent a Car API',
+      name: 'Vanguard Automotive API',
       endpoints: ['GET /api/cars', 'GET /api/cars/featured', 'GET /api/cars/:id', 'POST /api/bookings', 'GET /api/orders', 'POST /api/orders', 'GET /api/appointments', 'POST /api/appointments', 'POST /api/appointments/:id/notify'],
     },
   });
@@ -47,5 +47,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚗 Rent a Car API çalışıyor: http://localhost:${PORT}`);
+  console.log(`🚗 Vanguard Automotive API çalışıyor: http://localhost:${PORT}`);
 });

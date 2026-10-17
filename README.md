@@ -1,10 +1,17 @@
-# Rent a Car API
+# Vanguard Automotive API
 
-Scout Motors ilhamlı araç kiralama frontend'i (React + TypeScript) için hazırlanmış bağımsız bir Express.js REST API. Veritabanı kullanılmıyor: araçlar `data/cars.js` içinde mock olarak, rezervasyonlar ise memory'de tutuluyor.
+Lüks arazi ve SUV araçlar satan hayali butik galeri **Vanguard Automotive**'in web sitesi için yazılmış Express.js REST API.
+
+- **Araçlar:** `data/cars.js` içinde 12 araç (görseller, teknik bilgiler, detay sayfası metinleri, isteğe bağlı video)
+- **Özel sunum randevuları:** doğrulama + SQLite'ta kalıcı kayıt (`node:sqlite`, ek paket yok)
+- **WhatsApp bildirimi:** her yeni randevuda satış ekibine Meta WhatsApp Cloud API ile mesaj (ayarlanmazsa konsola yazılır)
+
+> **Not:** Bu bir **portfolyo / demo projesidir**; Vanguard Automotive gerçek bir işletme değildir.
+> Ön yüz ayrı bir depodadır (`car-rental-frontend`).
 
 ## Kurulum ve çalıştırma
 
-Node.js 18.11+ gerekir (`--watch` desteği için).
+Node.js **22.13+** gerekir (yerleşik `node:sqlite` ve `--env-file-if-exists` için).
 
 ```bash
 npm install
@@ -20,13 +27,20 @@ API varsayılan olarak **http://localhost:3001** adresinde çalışır. Portu de
 
 ```text
 rent-a-car-api/
-├── server.js          # Express app, middleware (CORS, JSON), 404 ve error handler
+├── server.js            # Express app, middleware (CORS, JSON), 404 ve error handler
 ├── routes/
-│   ├── cars.js        # /api/cars endpoint'leri (listeleme, filtre, featured, detay)
-│   ├── bookings.js    # /api/bookings endpoint'leri (validasyon + memory'de saklama)
-│   └── orders.js      # /api/orders endpoint'leri (satın alma ön rezervasyonu)
+│   ├── cars.js          # /api/cars (listeleme, filtre, featured, detay)
+│   ├── appointments.js  # /api/appointments (özel sunum randevuları — sitenin kullandığı akış)
+│   ├── orders.js        # /api/orders (eski: kaparolu ön rezervasyon, bellekte)
+│   └── bookings.js      # /api/bookings (eski: kiralama, bellekte)
+├── lib/
+│   ├── db.js            # SQLite bağlantısı ve randevu tablosu
+│   └── whatsapp.js      # WhatsApp bildirimi
 ├── data/
-│   └── cars.js        # 12 adet arazi SUV'u (mock veri)
+│   ├── cars.js          # 12 araç
+│   └── vanguard.db      # randevu veritabanı (otomatik oluşur, Git'e eklenmez)
+├── postman/             # Postman koleksiyonu
+├── .env.example         # WhatsApp ayar şablonu
 └── package.json
 ```
 
@@ -67,12 +81,11 @@ Validasyon hatalarında (400) tüm hatalar `errors` dizisinde döner:
 | GET | `/api/cars` | Tüm araçlar. `category`, `brand`, `search` query parametreleri birlikte kullanılabilir |
 | GET | `/api/cars/featured` | `isFeatured === true` olan araçlar |
 | GET | `/api/cars/:id` | Tek araç (yoksa 404) |
-| POST | `/api/bookings` | Yeni rezervasyon oluşturur (201) |
-| POST | `/api/orders` | Aracı satın almak için kaparo ile ön rezervasyon yapar (201) |
-| GET | `/api/orders` | Satın alma ön rezervasyonlarını listeler (test kolaylığı için) |
-| POST | `/api/appointments` | Showroom ziyareti veya adreste özel sunum randevusu talebi (201) |
-| GET | `/api/appointments` | Randevu taleplerini listeler (test kolaylığı için) |
-| GET | `/api/bookings` | Oluşturulan rezervasyonları listeler (test kolaylığı için) |
+| POST | `/api/appointments` | Showroom ziyareti veya adreste özel sunum randevusu (201) |
+| GET | `/api/appointments` | Randevuları ve WhatsApp bildirim durumlarını listeler |
+| POST | `/api/appointments/:id/notify` | Gönderilemeyen bildirimi yeniden dener |
+| POST / GET | `/api/orders` | *Eski:* kaparolu ön rezervasyon (sitede kullanılmıyor) |
+| POST / GET | `/api/bookings` | *Eski:* kiralama rezervasyonu (sitede kullanılmıyor) |
 
 ### Filtreleme
 
@@ -115,7 +128,7 @@ Kontroller:
 | Araç seçilen tarihlerde başka bir rezervasyonla çakışıyor | 409 |
 
 > `totalPrice` frontend'den gelen değer olarak saklanır, server tarafında yeniden hesaplanmaz.
-> Rezervasyonlar memory'de tutulduğu için server yeniden başlayınca silinir.
+> Eski uç nokta; rezervasyonlar bellekte tutulur, server yeniden başlayınca silinir.
 
 ### POST /api/orders
 
@@ -281,4 +294,4 @@ type ApiResponse<T> = ApiSuccess<T> | ApiError;
 
 ## Görseller
 
-Görseller Unsplash CDN'inden geliyor (hepsinin erişilebilir olduğu kontrol edildi). Her fotoğraf listedeki modelle elle eşleştirildi; bazıları modelin bir önceki kasasına ait olabilir (örn. Range Rover Sport, Land Cruiser).
+Araç görselleri ön yüz deposunun `public/cars/` klasöründen sunulur (`/cars/...` yolları); çoğu yapay zekâ ile üretilmiştir, birkaçı Unsplash'tan alınmıştır (`img(...)` ile tanımlananlar). Görsellerdeki araçlar gerçek ürünleri birebir temsil etmeyebilir.
