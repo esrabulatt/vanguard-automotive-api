@@ -353,6 +353,32 @@
               }
             }
           }
+        },
+        {
+          "name": "Bildirimi yeniden dene",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/:id/notify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments",
+                ":id",
+                "notify"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "WhatsApp bildirimi gönderilemeyen randevu için yeniden dener."
+          }
         }
       ]
     }

@@ -184,6 +184,31 @@ VIP özel sunum randevusu. Aracı rezerve etmez (`isAvailable` değişmez); dan�
 
 Başarılı yanıt (201): gönderilen alanlar + `id`, `status: "pending"`, `createdAt`. Hatalar: 400 (validasyon), 404 (araç yok).
 
+## Randevuların saklanması ve WhatsApp bildirimi
+
+- Randevular `data/vanguard.db` SQLite dosyasında kalıcı tutulur (Node 22.13+ yerleşik `node:sqlite`, ek paket yok). Dosya Git'e eklenmez.
+- Her yeni randevu satış ekibine **WhatsApp** ile bildirilir (Meta WhatsApp Cloud API). Bildirim arka planda gider; müşteri beklemez.
+- Ayarlar `.env` dosyasından okunur: `.env.example` dosyasını `.env` olarak kopyalayıp doldurun, ardından `npm run dev`.
+- Ayar yoksa randevu yine kaydedilir, mesaj metni sunucu konsoluna yazılır ve bildirim durumu `not_configured` olur.
+- `GET /api/appointments` her randevunun `notification` alanında bildirim durumunu gösterir: `sent` | `failed` | `not_configured`.
+- `POST /api/appointments/:id/notify` gönderilemeyen bir bildirimi yeniden dener.
+
+### WhatsApp şablonu
+
+İşletmenin başlattığı mesajlar için Meta onaylı bir şablon gerekir. Önerilen şablon (Kategori: *Utility*, Dil: *Turkish*):
+
+```
+Yeni özel sunum randevusu
+Müşteri: {{1}}
+Telefon: {{2}}
+Araç: {{3}}
+Hizmet: {{4}}
+Yer: {{5}}
+Zaman: {{6}}
+```
+
+Onaylanınca adını `WHATSAPP_TEMPLATE` olarak girin. Şablon girilmezse düz metin gönderilir; bu yalnızca alıcı son 24 saat içinde işletme numarasına yazmışsa iletilir.
+
 ## Status code'lar
 
 | Kod | Anlam |

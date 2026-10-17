@@ -1,12 +1,13 @@
 const express = require('express');
 const { randomUUID } = require('crypto');
 const cars = require('../data/cars');
+const db = require('../lib/db');
+const { notifyAppointment } = require('../lib/whatsapp');
 
 const router = express.Router();
 
-// Özel sunum randevuları şimdilik memory'de tutuluyor; server yeniden başlayınca sıfırlanır.
+// Özel sunum randevuları SQLite'ta (data/vanguard.db) kalıcı tutulur; her yeni randevu ekibe WhatsApp'tan bildirilir.
 // Randevu aracı rezerve etmez; danışman müşteriyi arayıp sunumu planlar.
-const appointments = [];
 
 const TYPES = ['showroom', 'home'];
 const TIME_SLOTS = ['morning', 'noon', 'afternoon'];
@@ -62,6 +63,7 @@ const validateAppointment = (body) => {
 
 // GET /api/appointments — oluşturulan randevuları görmek için (test kolaylığı)
 router.get('/', (req, res) => {
+  const appointments = db.listAppointments();
   res.status(200).json({ success: true, count: appointments.length, data: appointments });
 });
 
@@ -92,8 +94,21 @@ router.post('/', (req, res) => {
     createdAt: new Date().toISOString(),
   };
 
-  appointments.push(appointment);
+  db.insertAppointment(appointment);
+  // Müşteriyi bekletmemek için yanıt hemen döner; bildirim arka planda gönderilir ve sonucu kaydedilir
   res.status(201).json({ success: true, data: appointment });
+  notifyAppointment(appointment)
+    .then(({ status, error }) => db.setNotification(appointment.id, status, error))
+    .catch((err) => db.setNotification(appointment.id, 'failed', err.message));
+});
+
+// POST /api/appointments/:id/notify — gönderilemeyen bir bildirimi yeniden dener
+router.post('/:id/notify', async (req, res) => {
+  const appointment = db.getAppointment(req.params.id);
+  if (!appointment) return res.status(404).json({ success: false, message: 'Randevu bulunamadı.' });
+  const result = await notifyAppointment(appointment);
+  db.setNotification(appointment.id, result.status, result.error);
+  res.status(result.status === 'sent' ? 200 : 502).json({ success: result.status === 'sent', data: result });
 });
 
 module.exports = router;

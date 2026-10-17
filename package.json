@@ -1,14 +1,14 @@
 {
   "name": "rent-a-car-api",
   "version": "1.0.0",
-  "description": "Car Rental REST API (Express) - React + TypeScript frontend için mock backend",
+  "description": "Car Rental REST API (Express) - React + TypeScript frontend için backend",
   "main": "server.js",
   "scripts": {
-    "dev": "node --watch server.js",
-    "start": "node server.js"
+    "dev": "node --env-file-if-exists=.env --watch server.js",
+    "start": "node --env-file-if-exists=.env server.js"
   },
   "engines": {
-    "node": ">=18.11"
+    "node": ">=22.13"
   },
   "license": "MIT",
   "dependencies": {

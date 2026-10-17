@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
     success: true,
     data: {
       name: 'Rent a Car API',
-      endpoints: ['GET /api/cars', 'GET /api/cars/featured', 'GET /api/cars/:id', 'POST /api/bookings', 'GET /api/orders', 'POST /api/orders', 'GET /api/appointments', 'POST /api/appointments'],
+      endpoints: ['GET /api/cars', 'GET /api/cars/featured', 'GET /api/cars/:id', 'POST /api/bookings', 'GET /api/orders', 'POST /api/orders', 'GET /api/appointments', 'POST /api/appointments', 'POST /api/appointments/:id/notify'],
     },
   });
 });
